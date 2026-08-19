@@ -1,0 +1,1438 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#111827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BodyTrack">
+  <title>BodyTrack V2</title>
+
+  <style>
+    :root{
+      --bg:#f4faff;
+      --card:#ffffff;
+      --card2:#eaf6ff;
+      --text:#16324a;
+      --muted:#6c8498;
+      --line:#d8eaf7;
+      --accent:#62b9f4;
+      --accent2:#8acdf8;
+      --green:#2f9e71;
+      --orange:#e39a3b;
+      --red:#d85d67;
+      --shadow:0 8px 28px rgba(76,145,194,.10);
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      min-height:100%;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+    button,input,textarea,select{font:inherit}
+    button{border:0;cursor:pointer}
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      padding:calc(14px + env(safe-area-inset-top)) 18px 14px;
+      background:rgba(244,250,255,.94);
+      backdrop-filter:blur(18px);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .eyebrow{
+      font-size:11px;
+      letter-spacing:2px;
+      font-weight:900;
+      color:var(--accent);
+    }
+    .topbar h1{
+      margin:3px 0 0;
+      font-size:29px;
+      line-height:1.05;
+    }
+    .icon-btn{
+      width:44px;
+      height:44px;
+      border-radius:15px;
+      background:#79c6f5;
+      color:white;
+      font-size:28px;
+      line-height:1;
+      box-shadow:var(--shadow);
+    }
+
+    main{
+      padding:4px 16px 30px;
+      max-width:760px;
+      margin:auto;
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:24px;
+      padding:20px;
+      margin:12px 0;
+      box-shadow:var(--shadow);
+    }
+    .hero{
+      background:linear-gradient(145deg,#dff3ff,#c9ebff);
+      color:var(--text);
+      padding:24px;
+      border:1px solid #c4e7fb;
+    }
+    .muted{color:var(--muted)}
+    .hero .muted{color:#607f96}
+    .weight{
+      font-size:52px;
+      font-weight:850;
+      letter-spacing:-2px;
+      margin:7px 0 2px;
+    }
+    .unit{
+      font-size:18px;
+      font-weight:750;
+      letter-spacing:0;
+    }
+
+    .section-title{
+      font-size:18px;
+      font-weight:850;
+      margin:22px 4px 10px;
+    }
+
+    .primary,.secondary,.danger{
+      border-radius:15px;
+      padding:14px 18px;
+      font-weight:800;
+    }
+    .primary{
+      background:linear-gradient(135deg,#69bff3,#8dd3fb);
+      color:white;
+      box-shadow:0 6px 18px rgba(98,185,244,.22);
+    }
+    .secondary{background:#eaf6ff;color:#234862}
+    .danger{background:#fee2e2;color:#b91c1c}
+    .full{width:100%;margin-top:12px}
+
+    .quick-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .quick-card{
+      background:var(--card);
+      border-radius:20px;
+      padding:18px;
+      text-align:left;
+      box-shadow:var(--shadow);
+      color:var(--text);
+    }
+    .quick-card strong{
+      display:block;
+      font-size:16px;
+      margin-top:8px;
+    }
+    .quick-card small{color:var(--muted)}
+    .big-icon{font-size:26px}
+
+    .metric-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .metric-box{
+      background:var(--card2);
+      border-radius:15px;
+      padding:13px;
+    }
+    .metric-box small{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .metric-box strong{font-size:19px}
+    .metric-box .delta{
+      display:block;
+      margin-top:4px;
+      font-size:12px;
+      font-weight:750;
+    }
+
+    .green{color:var(--green)}
+    .orange{color:var(--orange)}
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      padding:12px 0;
+      border-bottom:1px solid var(--line);
+    }
+    .row:last-child{border-bottom:0}
+    .sub{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:5px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 9px;
+      border-radius:999px;
+      background:var(--card2);
+      font-size:12px;
+      font-weight:750;
+    }
+
+    .tabbar{
+      position:fixed;
+      z-index:30;
+      left:0;
+      right:0;
+      bottom:0;
+      padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+      display:flex;
+      justify-content:space-around;
+      background:rgba(255,255,255,.96);
+      border-top:1px solid var(--line);
+      backdrop-filter:blur(18px);
+    }
+    .tab{
+      background:transparent;
+      color:#8b8b93;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:3px;
+      padding:3px 7px;
+      min-width:54px;
+    }
+    .tab span{font-size:21px}
+    .tab small{font-size:10px;font-weight:750}
+    .tab.active{color:var(--accent)}
+
+    .modal{
+      position:fixed;
+      inset:0;
+      z-index:60;
+      background:rgba(40,80,110,.24);
+      display:flex;
+      align-items:flex-end;
+    }
+    .modal.hidden{display:none}
+    .sheet{
+      width:100%;
+      max-height:94vh;
+      overflow:auto;
+      background:var(--bg);
+      border-radius:25px 25px 0 0;
+      padding:34px 16px calc(26px + env(safe-area-inset-bottom));
+    }
+    .sheet-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:14px;
+      padding-top:4px;
+    }
+    .sheet h2{margin:0}
+    .close{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      background:#e1f2fd;
+      font-size:25px;
+      color:#467694;
+    }
+    .sheet section{
+      background:var(--card);
+      border-radius:18px;
+      padding:4px 14px 14px;
+      margin:14px 0;
+    }
+    .sheet h3{
+      font-size:15px;
+      margin:14px 0 8px;
+    }
+    .sheet label{
+      display:block;
+      font-size:13px;
+      font-weight:750;
+      margin:12px 0;
+      color:#4b5563;
+      position:relative;
+    }
+    .sheet label span{
+      position:absolute;
+      right:14px;
+      bottom:13px;
+      color:#999;
+      font-weight:650;
+    }
+    .sheet input,.sheet textarea,.sheet select{
+      display:block;
+      width:100%;
+      margin-top:6px;
+      border:1px solid #d9d9df;
+      background:var(--card);
+      color:var(--text);
+      border-radius:13px;
+      padding:12px 14px;
+      outline:none;
+    }
+    .sheet label span+input{padding-right:45px}
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:0 10px;
+    }
+
+    .history-item{
+      padding:15px 0;
+      border-bottom:1px solid var(--line);
+    }
+    .history-item:last-child{border-bottom:0}
+    .history-head{
+      display:flex;
+      justify-content:space-between;
+      font-weight:850;
+      gap:12px;
+    }
+    .actions{
+      display:flex;
+      gap:8px;
+      margin-top:10px;
+    }
+    .actions button{
+      padding:8px 12px;
+      border-radius:10px;
+      background:var(--card2);
+      color:var(--text);
+      font-weight:750;
+    }
+
+    .select{
+      width:100%;
+      padding:13px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--card);
+      color:var(--text);
+    }
+
+    .chart-card{overflow:hidden}
+    .chart-wrap{
+      width:100%;
+      overflow-x:auto;
+    }
+    .chart{
+      height:250px;
+      width:100%;
+      min-width:320px;
+      display:block;
+    }
+
+    .empty{
+      text-align:center;
+      padding:30px 18px;
+    }
+    .empty .symbol{
+      font-size:42px;
+      margin-bottom:10px;
+    }
+
+    .note{
+      background:var(--card2);
+      border-radius:12px;
+      padding:10px;
+      font-size:13px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+
+    .running{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+    .running .metric-box strong{font-size:22px}
+
+    .choice{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:14px;
+    }
+    .choice button{
+      min-height:120px;
+      border-radius:20px;
+      background:var(--card);
+      color:var(--text);
+      box-shadow:var(--shadow);
+      padding:18px;
+      text-align:left;
+    }
+    .choice button strong{
+      display:block;
+      margin-top:8px;
+    }
+
+    .status{
+      padding:10px 12px;
+      border-radius:13px;
+      margin-top:12px;
+      font-size:13px;
+      font-weight:700;
+      background:var(--card2);
+    }
+
+    @media(prefers-color-scheme:dark){
+      :root{
+        --bg:#f4faff;
+        --card:#ffffff;
+        --card2:#eaf6ff;
+        --text:#16324a;
+        --muted:#6c8498;
+        --line:#d8eaf7;
+        --accent:#62b9f4;
+        --accent2:#8acdf8;
+        --shadow:0 8px 28px rgba(76,145,194,.10);
+      }
+      .topbar{background:rgba(244,250,255,.94)}
+      .tabbar{background:rgba(255,255,255,.96)}
+      .hero{background:linear-gradient(145deg,#dff3ff,#c9ebff);color:var(--text)}
+      .secondary,.actions button{background:#eaf6ff;color:#234862}
+      .close{background:#e1f2fd;color:#467694}
+      .sheet label{color:#4e7087}
+      .danger{background:#fff0f1;color:#b6454f}
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">BODYTRACK V2</div>
+      <h1 id="pageTitle">Übersicht</h1>
+    </div>
+    <button class="icon-btn" id="quickAdd" aria-label="Neue Messung">＋</button>
+  </header>
+
+  <main id="main"></main>
+
+  <nav class="tabbar">
+    <button data-tab="dashboard" class="tab active"><span>⌂</span><small>Übersicht</small></button>
+    <button data-tab="daily" class="tab"><span>⚖️</span><small>Gewicht</small></button>
+    <button data-tab="weekly" class="tab"><span>📏</span><small>Gesamt</small></button>
+    <button data-tab="charts" class="tab"><span>⌁</span><small>Verlauf</small></button>
+    <button data-tab="settings" class="tab"><span>⚙</span><small>Mehr</small></button>
+  </nav>
+</div>
+
+<div class="modal hidden" id="addChoiceModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2>Neue Messung</h2>
+      <button class="close" data-close="addChoiceModal">×</button>
+    </div>
+    <div class="choice">
+      <button id="chooseDaily">
+        <div class="big-icon">⚖️</div>
+        <strong>Tagesgewicht</strong>
+        <small class="sub">Nur Gewicht, Datum und Uhrzeit</small>
+      </button>
+      <button id="chooseWeekly">
+        <div class="big-icon">📏</div>
+        <strong>Gesamtmessung</strong>
+        <small class="sub">Gewicht und alle Körpermaße</small>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal hidden" id="dailyModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2 id="dailyModalTitle">Tagesgewicht</h2>
+      <button class="close" data-close="dailyModal">×</button>
+    </div>
+    <form id="dailyForm">
+      <section>
+        <h3>Zeitpunkt</h3>
+        <div class="grid">
+          <label>Datum<input type="date" id="dailyDate" required></label>
+          <label>Uhrzeit<input type="time" id="dailyTime" required></label>
+        </div>
+      </section>
+
+      <section>
+        <h3>Gewicht</h3>
+        <label>Gewicht <span>kg</span><input inputmode="decimal" id="dailyWeight" required placeholder="z. B. 88,2"></label>
+      </section>
+
+      <label>Notiz<textarea id="dailyNote" rows="3" placeholder="Optional"></textarea></label>
+      <button class="primary full" type="submit">Gewicht speichern</button>
+      <button class="danger full hidden" type="button" id="deleteDaily">Eintrag löschen</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal hidden" id="weeklyModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2 id="weeklyModalTitle">Gesamtmessung</h2>
+      <button class="close" data-close="weeklyModal">×</button>
+    </div>
+    <form id="weeklyForm">
+      <section>
+        <h3>Zeitpunkt</h3>
+        <div class="grid">
+          <label>Datum<input type="date" id="weeklyDate" required></label>
+          <label>Uhrzeit<input type="time" id="weeklyTime" required></label>
+        </div>
+      </section>
+
+      <section>
+        <h3>Gewicht</h3>
+        <label>Gewicht <span>kg</span><input inputmode="decimal" id="weeklyWeight" placeholder="wird ggf. übernommen"></label>
+        <div class="sub" id="weightHint"></div>
+      </section>
+
+      <section>
+        <h3>Körpermaße</h3>
+        <div class="grid">
+          <label>Taille <span>cm</span><input inputmode="decimal" id="waist"></label>
+          <label>Bauch <span>cm</span><input inputmode="decimal" id="abdomen"></label>
+          <label>Hüfte <span>cm</span><input inputmode="decimal" id="hips"></label>
+          <label>Brust <span>cm</span><input inputmode="decimal" id="chest"></label>
+          <label>Oberarm links <span>cm</span><input inputmode="decimal" id="upperArmLeft"></label>
+          <label>Oberarm rechts <span>cm</span><input inputmode="decimal" id="upperArmRight"></label>
+          <label>Oberschenkel links <span>cm</span><input inputmode="decimal" id="thighLeft"></label>
+          <label>Oberschenkel rechts <span>cm</span><input inputmode="decimal" id="thighRight"></label>
+        </div>
+      </section>
+
+      <label>Notiz<textarea id="weeklyNote" rows="3" placeholder="Optional"></textarea></label>
+      <button class="primary full" type="submit">Gesamtmessung speichern</button>
+      <button class="danger full hidden" type="button" id="deleteWeekly">Messung löschen</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const DAILY_KEY="bodytrack_v2_daily_weights";
+  const WEEKLY_KEY="bodytrack_v2_weekly_measurements";
+  const SETTINGS_KEY="bodytrack_v2_settings";
+
+  const BODY_FIELDS=[
+    "waist","abdomen","hips","chest",
+    "upperArmLeft","upperArmRight","thighLeft","thighRight"
+  ];
+
+  const LABELS={
+    weight:"Gewicht",
+    waist:"Taille",
+    abdomen:"Bauch",
+    hips:"Hüfte",
+    chest:"Brust",
+    upperArmLeft:"Oberarm links",
+    upperArmRight:"Oberarm rechts",
+    thighLeft:"Oberschenkel links",
+    thighRight:"Oberschenkel rechts"
+  };
+
+  let daily=JSON.parse(localStorage.getItem(DAILY_KEY)||"[]");
+  let weekly=JSON.parse(localStorage.getItem(WEEKLY_KEY)||"[]");
+  let settings=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{"targetWeight":null}');
+  let currentTab="dashboard";
+  let editingDailyId=null;
+  let editingWeeklyId=null;
+
+  const $=id=>document.getElementById(id);
+
+  const num=value=>{
+    if(value==null||String(value).trim()==="")return null;
+    const n=parseFloat(String(value).replace(",","."));
+    return Number.isFinite(n)?n:null;
+  };
+
+  const fmt=(n,d=1)=>
+    n==null ? "–" :
+    Number(n).toLocaleString("de-DE",{
+      minimumFractionDigits:d,
+      maximumFractionDigits:d
+    });
+
+  const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[m]));
+
+  const dateDE=d=>
+    new Date(d+"T12:00:00").toLocaleDateString("de-DE",{
+      day:"2-digit",
+      month:"2-digit",
+      year:"numeric"
+    });
+
+  const dateTimeValue=(date,time)=>
+    new Date(`${date}T${time||"00:00"}:00`).getTime();
+
+  const sortDesc=list=>
+    [...list].sort((a,b)=>dateTimeValue(b.date,b.time)-dateTimeValue(a.date,a.time));
+
+  const sortAsc=list=>
+    [...list].sort((a,b)=>dateTimeValue(a.date,a.time)-dateTimeValue(b.date,b.time));
+
+  const saveDaily=()=>localStorage.setItem(DAILY_KEY,JSON.stringify(daily));
+  const saveWeekly=()=>localStorage.setItem(WEEKLY_KEY,JSON.stringify(weekly));
+  const saveSettings=()=>localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
+
+  function nowParts(){
+    const d=new Date();
+    const local=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString();
+    return {date:local.slice(0,10),time:local.slice(11,16)};
+  }
+
+  function getLatestDaily(){
+    return sortDesc(daily)[0]||null;
+  }
+
+  function getLatestWeekly(){
+    return sortDesc(weekly)[0]||null;
+  }
+
+  function getDailyForDate(date){
+    return daily.find(x=>x.date===date)||null;
+  }
+
+  function firstDaily(){
+    return sortAsc(daily)[0]||null;
+  }
+
+  function rollingAverageForDate(date){
+    const end=new Date(date+"T23:59:59");
+    const start=new Date(end);
+    start.setDate(start.getDate()-6);
+    start.setHours(0,0,0,0);
+
+    const values=daily
+      .filter(x=>{
+        const t=dateTimeValue(x.date,x.time);
+        return t>=start.getTime() && t<=end.getTime() && x.weight!=null;
+      })
+      .map(x=>x.weight);
+
+    if(!values.length)return null;
+    return values.reduce((a,b)=>a+b,0)/values.length;
+  }
+
+  function currentRollingAverage(){
+    if(!daily.length)return null;
+    return rollingAverageForDate(nowParts().date);
+  }
+
+  function averageForRange(endDate,dayCount){
+    const end=new Date(endDate+"T23:59:59");
+    const start=new Date(end);
+    start.setDate(start.getDate()-(dayCount-1));
+    start.setHours(0,0,0,0);
+
+    const values=daily
+      .filter(x=>{
+        const t=dateTimeValue(x.date,x.time);
+        return t>=start.getTime() && t<=end.getTime() && x.weight!=null;
+      })
+      .map(x=>x.weight);
+
+    if(!values.length)return null;
+    return values.reduce((a,b)=>a+b,0)/values.length;
+  }
+
+  function averageChangeVsPreviousWeek(){
+    const today=nowParts().date;
+    const current=averageForRange(today,7);
+
+    const prevEnd=new Date(today+"T12:00:00");
+    prevEnd.setDate(prevEnd.getDate()-7);
+    const prevEndString=[
+      prevEnd.getFullYear(),
+      String(prevEnd.getMonth()+1).padStart(2,"0"),
+      String(prevEnd.getDate()).padStart(2,"0")
+    ].join("-");
+
+    const previous=averageForRange(prevEndString,7);
+
+    if(current==null||previous==null)return null;
+    return current-previous;
+  }
+
+  function daysSinceWeekly(){
+    const latest=getLatestWeekly();
+    if(!latest)return null;
+    const today=new Date(nowParts().date+"T12:00:00");
+    const last=new Date(latest.date+"T12:00:00");
+    return Math.floor((today-last)/86400000);
+  }
+
+  function setTab(tab){
+    currentTab=tab;
+    document.querySelectorAll(".tab").forEach(btn=>{
+      btn.classList.toggle("active",btn.dataset.tab===tab);
+    });
+
+    $("pageTitle").textContent={
+      dashboard:"Übersicht",
+      daily:"Tagesgewicht",
+      weekly:"Gesamtmessungen",
+      charts:"Verlauf",
+      settings:"Mehr"
+    }[tab];
+
+    render();
+  }
+
+  document.querySelectorAll(".tab").forEach(btn=>{
+    btn.addEventListener("click",()=>setTab(btn.dataset.tab));
+  });
+
+  $("quickAdd").onclick=()=>{
+    $("addChoiceModal").classList.remove("hidden");
+  };
+
+  $("chooseDaily").onclick=()=>{
+    closeModal("addChoiceModal");
+    openDailyModal();
+  };
+
+  $("chooseWeekly").onclick=()=>{
+    closeModal("addChoiceModal");
+    openWeeklyModal();
+  };
+
+  document.querySelectorAll("[data-close]").forEach(btn=>{
+    btn.onclick=()=>closeModal(btn.dataset.close);
+  });
+
+  document.querySelectorAll(".modal").forEach(modal=>{
+    modal.addEventListener("click",event=>{
+      if(event.target===modal)closeModal(modal.id);
+    });
+  });
+
+  function closeModal(id){
+    $(id).classList.add("hidden");
+  }
+
+  function dashboardHTML(){
+    const latest=getLatestDaily();
+    const avg=currentRollingAverage();
+    const avgDelta=averageChangeVsPreviousWeek();
+    const first=firstDaily();
+    const latestWeekly=getLatestWeekly();
+    const startChange=latest&&first ? latest.weight-first.weight : null;
+    const weeklyAge=daysSinceWeekly();
+
+    let weeklyStatus="";
+    if(latestWeekly){
+      if(weeklyAge>=7){
+        weeklyStatus=`<div class="status orange">Die letzte Gesamtmessung ist ${weeklyAge} Tage her.</div>`;
+      }else{
+        weeklyStatus=`<div class="status green">Nächste Gesamtmessung in etwa ${7-weeklyAge} Tag${7-weeklyAge===1?"":"en"}.</div>`;
+      }
+    }
+
+    return `
+      <div class="card hero">
+        <div class="muted">Aktuelles Tagesgewicht</div>
+        <div class="weight">${latest?fmt(latest.weight):"–"} <span class="unit">kg</span></div>
+        ${
+          latest
+          ? `<div class="muted">${dateDE(latest.date)} · ${latest.time} Uhr</div>`
+          : `<div class="muted">Noch kein Tagesgewicht eingetragen</div>`
+        }
+
+        <div class="running">
+          <div class="metric-box" style="background:rgba(255,255,255,.72)">
+            <small style="color:#b9bdc8">7-Tage-Ø</small>
+            <strong>${avg!=null?fmt(avg)+" kg":"–"}</strong>
+          </div>
+
+          <div class="metric-box" style="background:rgba(255,255,255,.72)">
+            <small style="color:#b9bdc8">Ø vs. Vorwoche</small>
+            <strong class="${avgDelta==null?"":avgDelta<=0?"green":"orange"}">
+              ${
+                avgDelta==null
+                ? "–"
+                : `${avgDelta>0?"+":""}${fmt(avgDelta)} kg`
+              }
+            </strong>
+          </div>
+        </div>
+
+        ${
+          startChange!=null
+          ? `<div class="sub" style="color:#607f96;margin-top:12px">
+              Seit dem ersten Tagesgewicht:
+              <strong class="${startChange<=0?"green":"orange"}">${startChange>0?"+":""}${fmt(startChange)} kg</strong>
+            </div>`
+          : ""
+        }
+      </div>
+
+      <div class="quick-grid">
+        <button class="quick-card" onclick="openDailyModal()">
+          <div class="big-icon">⚖️</div>
+          <strong>Tagesgewicht</strong>
+          <small>Schnell eintragen</small>
+        </button>
+
+        <button class="quick-card" onclick="openWeeklyModal()">
+          <div class="big-icon">📏</div>
+          <strong>Gesamtmessung</strong>
+          <small>Wöchentliche Messung</small>
+        </button>
+      </div>
+
+      <div class="section-title">Letzte Gesamtmessung</div>
+
+      ${
+        latestWeekly
+        ? weeklySummaryCard(latestWeekly)+weeklyStatus
+        : `<div class="card empty">
+            <div class="symbol">📏</div>
+            <h2>Noch keine Gesamtmessung</h2>
+            <p>Hier erscheinen Gewicht und Körpermaße deiner wöchentlichen Messung.</p>
+            <button class="primary" onclick="openWeeklyModal()">Erste Gesamtmessung</button>
+          </div>`
+      }
+
+      ${
+        daily.length>=2
+        ? `<div class="section-title">Gewichtsverlauf</div>
+           <div class="card chart-card">
+             <canvas id="dashChart" class="chart"></canvas>
+             <div class="sub">Violett: Tagesgewicht · Grün: 7-Tage-Durchschnitt</div>
+           </div>`
+        : ""
+      }
+    `;
+  }
+
+  function weeklySummaryCard(m){
+    const list=sortDesc(weekly);
+    const index=list.findIndex(x=>x.id===m.id);
+    const previous=index>=0 ? list[index+1] : null;
+
+    return `
+      <div class="card">
+        <div class="history-head">
+          <span>${dateDE(m.date)}</span>
+          <span>${m.time} Uhr</span>
+        </div>
+
+        <div class="sub" style="margin-bottom:12px">
+          ${m.weight!=null?`Gewicht ${fmt(m.weight)} kg`:"Kein Gewicht hinterlegt"}
+        </div>
+
+        <div class="metric-grid">
+          ${BODY_FIELDS.map(key=>{
+            const delta=
+              previous && m[key]!=null && previous[key]!=null
+              ? m[key]-previous[key]
+              : null;
+
+            return `
+              <div class="metric-box">
+                <small>${LABELS[key]}</small>
+                <strong>${m[key]!=null?fmt(m[key])+" cm":"–"}</strong>
+                ${
+                  delta!=null
+                  ? `<span class="delta ${delta<=0?"green":"orange"}">${delta>0?"+":""}${fmt(delta)} cm</span>`
+                  : ""
+                }
+              </div>
+            `;
+          }).join("")}
+        </div>
+
+        ${m.note?`<div class="note">📝 ${esc(m.note)}</div>`:""}
+      </div>
+    `;
+  }
+
+  function dailyHTML(){
+    const list=sortDesc(daily);
+
+    return `
+      <div class="card">
+        <div class="history-head">
+          <span>7-Tage-Running-Average</span>
+          <span>${currentRollingAverage()!=null?fmt(currentRollingAverage())+" kg":"–"}</span>
+        </div>
+        <div class="sub">Es wird maximal ein Tagesgewicht pro Kalendertag gespeichert.</div>
+      </div>
+
+      <button class="primary full" onclick="openDailyModal()">＋ Tagesgewicht eintragen</button>
+
+      <div class="section-title">Tägliche Einträge</div>
+
+      ${
+        list.length
+        ? `<div class="card">
+            ${list.map(m=>`
+              <div class="history-item">
+                <div class="history-head">
+                  <span>${dateDE(m.date)} · ${m.time}</span>
+                  <span>${fmt(m.weight)} kg</span>
+                </div>
+
+                <div class="sub">
+                  7-Tage-Ø an diesem Tag:
+                  ${rollingAverageForDate(m.date)!=null?fmt(rollingAverageForDate(m.date))+" kg":"–"}
+                </div>
+
+                ${m.note?`<div class="note">${esc(m.note)}</div>`:""}
+
+                <div class="actions">
+                  <button onclick="editDaily('${m.id}')">Bearbeiten</button>
+                  <button onclick="deleteDailyEntry('${m.id}')">Löschen</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>`
+        : `<div class="card empty">
+            <div class="symbol">⚖️</div>
+            <h2>Noch keine Einträge</h2>
+          </div>`
+      }
+    `;
+  }
+
+  function weeklyHTML(){
+    const list=sortDesc(weekly);
+
+    return `
+      <button class="primary full" onclick="openWeeklyModal()">＋ Gesamtmessung eintragen</button>
+
+      <div class="section-title">Wöchentliche Messungen</div>
+
+      ${
+        list.length
+        ? `<div class="card">
+            ${list.map(m=>`
+              <div class="history-item">
+                <div class="history-head">
+                  <span>${dateDE(m.date)} · ${m.time}</span>
+                  <span>${m.weight!=null?fmt(m.weight)+" kg":"–"}</span>
+                </div>
+
+                <div class="sub">
+                  ${
+                    BODY_FIELDS
+                    .filter(key=>m[key]!=null)
+                    .slice(0,4)
+                    .map(key=>`${LABELS[key]} ${fmt(m[key])} cm`)
+                    .join(" · ")
+                    || "Keine Körpermaße eingetragen"
+                  }
+                </div>
+
+                <div class="actions">
+                  <button onclick="editWeekly('${m.id}')">Bearbeiten</button>
+                  <button onclick="deleteWeeklyEntry('${m.id}')">Löschen</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>`
+        : `<div class="card empty">
+            <div class="symbol">📏</div>
+            <h2>Noch keine Gesamtmessungen</h2>
+          </div>`
+      }
+    `;
+  }
+
+  function chartsHTML(){
+    return `
+      <div class="card">
+        <select id="metricSelect" class="select">
+          <option value="dailyWeight">Tagesgewicht + 7-Tage-Ø</option>
+          <option value="weeklyWeight">Gewicht der Gesamtmessungen</option>
+          ${BODY_FIELDS.map(key=>`<option value="${key}">${LABELS[key]}</option>`).join("")}
+        </select>
+      </div>
+
+      <div class="card chart-card">
+        <h2 id="chartTitle">Tagesgewicht + 7-Tage-Ø</h2>
+        <div class="chart-wrap">
+          <canvas id="chart" class="chart"></canvas>
+        </div>
+        <div id="chartLegend" class="sub"></div>
+        <div id="chartStats"></div>
+      </div>
+    `;
+  }
+
+  function settingsHTML(){
+    return `
+      <div class="card">
+        <h2>Zielgewicht</h2>
+        <p class="sub">Optional. Wird ausschließlich lokal auf diesem Gerät gespeichert.</p>
+
+        <label style="display:block;margin-top:16px;font-weight:750">
+          Zielgewicht (kg)
+          <input
+            id="targetInput"
+            inputmode="decimal"
+            class="select"
+            style="margin-top:7px"
+            value="${settings.targetWeight??""}"
+            placeholder="z. B. 70"
+          >
+        </label>
+
+        <button class="primary full" id="saveTarget">Ziel speichern</button>
+      </div>
+
+      <div class="card">
+        <h2>V2 Messlogik</h2>
+        <div class="row"><span>Tagesgewicht</span><strong>1× pro Tag</strong></div>
+        <div class="row"><span>Running Average</span><strong>7 Tage</strong></div>
+        <div class="row"><span>Gesamtmessung</span><strong>1× pro Woche</strong></div>
+        <div class="row"><span>Zeitstempel</span><strong>Datum + Uhrzeit</strong></div>
+      </div>
+
+      <div class="card">
+        <h2>Datenschutz</h2>
+        <p>
+          Alle Messdaten werden lokal im Browser deines iPhones gespeichert.
+          Es gibt keinen Account und keinen Server für deine Körperdaten.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>BodyTrack</h2>
+        <p class="sub">Version 2.0 · eine einzige index.html</p>
+      </div>
+    `;
+  }
+
+  function render(){
+    const main=$("main");
+
+    if(currentTab==="dashboard")main.innerHTML=dashboardHTML();
+    if(currentTab==="daily")main.innerHTML=dailyHTML();
+    if(currentTab==="weekly")main.innerHTML=weeklyHTML();
+    if(currentTab==="charts")main.innerHTML=chartsHTML();
+    if(currentTab==="settings")main.innerHTML=settingsHTML();
+
+    if(currentTab==="dashboard" && $("dashChart")){
+      drawDailyChart($("dashChart"));
+    }
+
+    if(currentTab==="charts"){
+      $("metricSelect").onchange=renderSelectedChart;
+      renderSelectedChart();
+    }
+
+    if(currentTab==="settings"){
+      $("saveTarget").onclick=()=>{
+        settings.targetWeight=num($("targetInput").value);
+        saveSettings();
+        render();
+      };
+    }
+  }
+
+  function openDailyModal(id=null){
+    editingDailyId=id;
+
+    $("dailyModalTitle").textContent=
+      id ? "Tagesgewicht bearbeiten" : "Tagesgewicht";
+
+    $("deleteDaily").classList.toggle("hidden",!id);
+
+    const entry=id ? daily.find(x=>x.id===id) : null;
+    const now=nowParts();
+
+    $("dailyDate").value=entry?.date||now.date;
+    $("dailyTime").value=entry?.time||now.time;
+    $("dailyWeight").value=entry?.weight??"";
+    $("dailyNote").value=entry?.note||"";
+
+    $("dailyModal").classList.remove("hidden");
+  }
+
+  window.openDailyModal=openDailyModal;
+  window.editDaily=id=>openDailyModal(id);
+
+  $("dailyForm").onsubmit=event=>{
+    event.preventDefault();
+
+    const entry={
+      id:editingDailyId||crypto.randomUUID(),
+      date:$("dailyDate").value,
+      time:$("dailyTime").value,
+      weight:num($("dailyWeight").value),
+      note:$("dailyNote").value.trim()
+    };
+
+    if(entry.weight==null)return;
+
+    const existing=daily.find(x=>
+      x.date===entry.date && x.id!==editingDailyId
+    );
+
+    if(existing){
+      const replace=confirm(
+        `Für ${dateDE(entry.date)} existiert bereits ein Tagesgewicht. Soll der vorhandene Eintrag ersetzt werden?`
+      );
+
+      if(!replace)return;
+
+      daily=daily.filter(x=>x.id!==existing.id);
+    }
+
+    if(editingDailyId){
+      const index=daily.findIndex(x=>x.id===editingDailyId);
+
+      if(index>=0){
+        daily[index]=entry;
+      }else{
+        daily.push(entry);
+      }
+    }else{
+      daily.push(entry);
+    }
+
+    saveDaily();
+    closeModal("dailyModal");
+    render();
+  };
+
+  $("deleteDaily").onclick=()=>{
+    if(editingDailyId)deleteDailyEntry(editingDailyId);
+    closeModal("dailyModal");
+  };
+
+  window.deleteDailyEntry=id=>{
+    if(!confirm("Diesen Gewichtseintrag wirklich löschen?"))return;
+    daily=daily.filter(x=>x.id!==id);
+    saveDaily();
+    render();
+  };
+
+  function fillWeightFromDaily(date){
+    const found=getDailyForDate(date);
+
+    if(found){
+      $("weeklyWeight").value=found.weight;
+      $("weightHint").textContent=
+        `Tagesgewicht vom ${found.time} Uhr automatisch übernommen.`;
+    }else{
+      $("weeklyWeight").value="";
+      $("weightHint").textContent=
+        "Für diesen Tag ist noch kein Tagesgewicht vorhanden.";
+    }
+  }
+
+  function openWeeklyModal(id=null){
+    editingWeeklyId=id;
+
+    $("weeklyModalTitle").textContent=
+      id ? "Gesamtmessung bearbeiten" : "Gesamtmessung";
+
+    $("deleteWeekly").classList.toggle("hidden",!id);
+
+    const entry=id ? weekly.find(x=>x.id===id) : null;
+    const now=nowParts();
+    const date=entry?.date||now.date;
+
+    $("weeklyDate").value=date;
+    $("weeklyTime").value=entry?.time||now.time;
+
+    BODY_FIELDS.forEach(key=>{
+      $(key).value=entry?.[key]??"";
+    });
+
+    $("weeklyNote").value=entry?.note||"";
+
+    if(entry){
+      $("weeklyWeight").value=entry.weight??"";
+      $("weightHint").textContent="";
+    }else{
+      fillWeightFromDaily(date);
+    }
+
+    $("weeklyModal").classList.remove("hidden");
+  }
+
+  window.openWeeklyModal=openWeeklyModal;
+  window.editWeekly=id=>openWeeklyModal(id);
+
+  $("weeklyDate").addEventListener("change",()=>{
+    if(!editingWeeklyId){
+      fillWeightFromDaily($("weeklyDate").value);
+    }
+  });
+
+  $("weeklyForm").onsubmit=event=>{
+    event.preventDefault();
+
+    const entry={
+      id:editingWeeklyId||crypto.randomUUID(),
+      date:$("weeklyDate").value,
+      time:$("weeklyTime").value,
+      weight:num($("weeklyWeight").value),
+      note:$("weeklyNote").value.trim()
+    };
+
+    BODY_FIELDS.forEach(key=>{
+      entry[key]=num($(key).value);
+    });
+
+    if(editingWeeklyId){
+      const index=weekly.findIndex(x=>x.id===editingWeeklyId);
+
+      if(index>=0){
+        weekly[index]=entry;
+      }else{
+        weekly.push(entry);
+      }
+    }else{
+      weekly.push(entry);
+    }
+
+    saveWeekly();
+    closeModal("weeklyModal");
+    render();
+  };
+
+  $("deleteWeekly").onclick=()=>{
+    if(editingWeeklyId)deleteWeeklyEntry(editingWeeklyId);
+    closeModal("weeklyModal");
+  };
+
+  window.deleteWeeklyEntry=id=>{
+    if(!confirm("Diese Gesamtmessung wirklich löschen?"))return;
+    weekly=weekly.filter(x=>x.id!==id);
+    saveWeekly();
+    render();
+  };
+
+  function canvasSetup(canvas){
+    const ctx=canvas.getContext("2d");
+    const dpr=devicePixelRatio||1;
+    const rect=canvas.getBoundingClientRect();
+
+    canvas.width=rect.width*dpr;
+    canvas.height=rect.height*dpr;
+    ctx.scale(dpr,dpr);
+
+    return {ctx,w:rect.width,h:rect.height};
+  }
+
+  function drawBaseChart(canvas,seriesList){
+    const {ctx,w,h}=canvasSetup(canvas);
+    const p={l:46,r:12,t:20,b:34};
+    const all=seriesList.flatMap(series=>series.data);
+
+    if(!all.length){
+      ctx.fillStyle="#888";
+      ctx.font="15px system-ui";
+      ctx.fillText("Noch keine Daten",p.l,h/2);
+      return;
+    }
+
+    const xs=all.map(d=>dateTimeValue(d.date,d.time||"12:00"));
+    const ys=all.map(d=>d.value);
+
+    const minX=Math.min(...xs);
+    const maxX=Math.max(...xs);
+    const xRange=maxX-minX||1;
+
+    let minY=Math.min(...ys);
+    let maxY=Math.max(...ys);
+
+    if(minY===maxY){
+      minY-=1;
+      maxY+=1;
+    }
+
+    const padY=(maxY-minY)*.12;
+    minY-=padY;
+    maxY+=padY;
+
+    const x=t=>p.l+(w-p.l-p.r)*((t-minX)/xRange);
+    const y=v=>p.t+(h-p.t-p.b)*(1-(v-minY)/(maxY-minY));
+
+    const fg=getComputedStyle(document.body).color;
+
+    ctx.strokeStyle=fg;
+    ctx.globalAlpha=.12;
+    ctx.lineWidth=1;
+
+    for(let i=0;i<4;i++){
+      const yy=p.t+(h-p.t-p.b)*i/3;
+      ctx.beginPath();
+      ctx.moveTo(p.l,yy);
+      ctx.lineTo(w-p.r,yy);
+      ctx.stroke();
+    }
+
+    ctx.globalAlpha=1;
+    ctx.fillStyle="#777";
+    ctx.font="11px system-ui";
+    ctx.fillText(fmt(minY),4,h-p.b+4);
+    ctx.fillText(fmt(maxY),4,p.t+4);
+
+    const palette=["#4f46e5","#22c55e","#f97316"];
+
+    seriesList.forEach((series,index)=>{
+      if(!series.data.length)return;
+
+      ctx.strokeStyle=palette[index%palette.length];
+      ctx.lineWidth=series.width||3;
+      ctx.lineCap="round";
+      ctx.lineJoin="round";
+      ctx.beginPath();
+
+      series.data.forEach((d,i)=>{
+        const xx=x(dateTimeValue(d.date,d.time||"12:00"));
+        const yy=y(d.value);
+
+        if(i===0)ctx.moveTo(xx,yy);
+        else ctx.lineTo(xx,yy);
+      });
+
+      ctx.stroke();
+
+      if(series.points!==false){
+        ctx.fillStyle=palette[index%palette.length];
+
+        series.data.forEach(d=>{
+          const xx=x(dateTimeValue(d.date,d.time||"12:00"));
+          const yy=y(d.value);
+
+          ctx.beginPath();
+          ctx.arc(xx,yy,3.5,0,Math.PI*2);
+          ctx.fill();
+        });
+      }
+    });
+  }
+
+  function dailySeries(){
+    const raw=sortAsc(daily)
+      .filter(x=>x.weight!=null)
+      .map(x=>({
+        date:x.date,
+        time:x.time,
+        value:x.weight
+      }));
+
+    const average=raw
+      .map(x=>({
+        date:x.date,
+        time:x.time,
+        value:rollingAverageForDate(x.date)
+      }))
+      .filter(x=>x.value!=null);
+
+    return {raw,average};
+  }
+
+  function drawDailyChart(canvas){
+    const series=dailySeries();
+
+    drawBaseChart(canvas,[
+      {data:series.raw,width:2},
+      {data:series.average,width:3,points:false}
+    ]);
+  }
+
+  function renderSelectedChart(){
+    const metric=$("metricSelect").value;
+    $("chartTitle").textContent=
+      $("metricSelect").selectedOptions[0].textContent;
+
+    const canvas=$("chart");
+    let values=[];
+
+    if(metric==="dailyWeight"){
+      const series=dailySeries();
+
+      drawDailyChart(canvas);
+      values=series.raw.map(x=>x.value);
+      $("chartLegend").textContent=
+        "Violett: Tagesgewicht · Grün: 7-Tage-Durchschnitt";
+    }else{
+      const key=metric==="weeklyWeight" ? "weight" : metric;
+
+      const data=sortAsc(weekly)
+        .filter(x=>x[key]!=null)
+        .map(x=>({
+          date:x.date,
+          time:x.time,
+          value:x[key]
+        }));
+
+      drawBaseChart(canvas,[{data}]);
+      values=data.map(x=>x.value);
+      $("chartLegend").textContent="";
+    }
+
+    const stats=$("chartStats");
+
+    if(values.length){
+      const delta=values[values.length-1]-values[0];
+
+      stats.innerHTML=`
+        <div class="metric-grid" style="margin-top:15px">
+          <div class="metric-box">
+            <small>Erster Wert</small>
+            <strong>${fmt(values[0])}</strong>
+          </div>
+          <div class="metric-box">
+            <small>Veränderung</small>
+            <strong class="${delta<=0?"green":"orange"}">${delta>0?"+":""}${fmt(delta)}</strong>
+          </div>
+        </div>
+      `;
+    }else{
+      stats.innerHTML="";
+    }
+  }
+
+  window.addEventListener("resize",()=>{
+    if(currentTab==="dashboard" && $("dashChart")){
+      drawDailyChart($("dashChart"));
+    }
+
+    if(currentTab==="charts" && $("chart")){
+      renderSelectedChart();
+    }
+  });
+
+  render();
+</script>
+</body>
+</html>
